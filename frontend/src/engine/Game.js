@@ -2,11 +2,13 @@
     import Input from "../input/input.js"
 
     class Game {
+
         constructor() {
+
             console.log("Game Created");
 
-            this.height = 1920;
-            this.width = 1080;
+            this.height = 1080;
+            this.width = 1920;
 
             this.canvas = document.createElement("canvas");
             this.context = this.canvas.getContext("2d");
@@ -21,29 +23,48 @@
             this.input = new Input();
             this.player = new Player();
 
+            this.previousTimeStamp = 0;
+
         }
 
         start() {
-            requestAnimationFrame(() => this.gameloop());
+
+            requestAnimationFrame((timestamp) => this.gameloop(timestamp));
         }
 
-        gameloop() {
+        gameloop(timestamp) {
 
-            this.update();
+            if(this.previousTimeStamp === 0) {
+                this.previousTimeStamp = timestamp;
+
+                requestAnimationFrame((timestamp) => this.gameloop(timestamp));
+
+                return;
+            }
+            
+            const deltaTime = (timestamp - this.previousTimeStamp) / 1000
+
+            this.previousTimeStamp = timestamp;
+
+            this.update(deltaTime);
 
             this.render();
 
-
-            console.log("Frame")
-            requestAnimationFrame(() => this.gameloop());
+            requestAnimationFrame((timestamp) => this.gameloop(timestamp));
         }
 
-        update() {
-            this.player.update(this.input);
+        update(deltaTime) {
+
+            this.player.update(deltaTime, this.input);
+
         }
 
         render() {
+
+            this.context.fillStyle = "black";
+            this.context.fillRect(0,0,this.width,this.height);
             this.player.render(this.context);
+
         }
     }
 
