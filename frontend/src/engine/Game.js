@@ -52,12 +52,14 @@
 
             this.render();
 
+            this.input.endframe();
+
             requestAnimationFrame((timestamp) => this.gameloop(timestamp));
         }
 
         update(deltaTime) {
 
-            this.player.update(deltaTime, this.input, this.groundY);
+            this.player.update(deltaTime, this.input, this.groundY, this.width);
 
         }
 
