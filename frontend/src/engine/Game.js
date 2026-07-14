@@ -7,8 +7,8 @@
 
             console.log("Game Created");
 
-            this.height = 1080;
-            this.width = 1920;
+            this.height = 900;
+            this.width = 1900;
 
             this.canvas = document.createElement("canvas");
             this.context = this.canvas.getContext("2d");
@@ -24,6 +24,8 @@
             this.player = new Player();
 
             this.previousTimeStamp = 0;
+
+            this.groundY = this.height - 100;
 
         }
 
@@ -55,7 +57,7 @@
 
         update(deltaTime) {
 
-            this.player.update(deltaTime, this.input);
+            this.player.update(deltaTime, this.input, this.groundY);
 
         }
 

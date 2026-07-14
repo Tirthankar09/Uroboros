@@ -1,17 +1,16 @@
-class Player {
+import GameObject from "./GameObject.js"
+class Player extends GameObject {
     constructor() {
 
-        this.x = 960;
-        this.y = 540;
-
-        this.width = 200;
-        this.height = 100;
+        super(100,100,100,100);
 
         this.speed = 400;
 
+        this.velocityY = 0;
+
     }
 
-    update(deltaTime, input) {
+    update(deltaTime, input, groundY) {
 
         if (input.pressedKeys.has("a")) {
             this.x -= this.speed * deltaTime;
@@ -27,6 +26,17 @@ class Player {
 
         if (input.pressedKeys.has("w")) {
             this.y -= this.speed * deltaTime;
+        }
+        
+        this.velocityY  += 500 * deltaTime;
+
+        this.y += this.velocityY * deltaTime;  
+        
+        if(this.y + this.height > groundY) {
+            
+            this.y = groundY - this.height;
+            this.velocityY = 0;
+
         }
     }
 
