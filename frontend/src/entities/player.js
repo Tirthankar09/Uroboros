@@ -9,15 +9,22 @@ class Player extends GameObject {
 
         this.velocityY = 0;
 
+        this.isGrounded = false;
+
     }
 
-    update(deltaTime, input, groundY, gameWidth) {  
+    update(deltaTime, input, groundY, gameWidth, platforms) {  
+
         
-        this.groundY = false;
+        
         this.handleInput(deltaTime, input);
         this.applyGravity(deltaTime);
+        for(const platform of platforms) {
+                this.checkPlatformCollision(platform);
+            }
         this.checkGroundCollision(groundY);
         this.checkWallCollision(gameWidth);
+        
 
     }
 
@@ -37,11 +44,11 @@ class Player extends GameObject {
             this.x += this.speed * deltaTime;
         }
 
-        if (input.justPressedKeys.has("w") && this.isGround === true) {
+        if (input.justPressedKeys.has(" ") && this.isGrounded) {
 
             this.velocityY = -400;
 
-            this.isGround = false;
+            this.isGrounded = false;
         }
 
     }
@@ -62,7 +69,7 @@ class Player extends GameObject {
 
             this.velocityY = 0;
 
-            this.isGround = true;
+            this.isGrounded = true;
 
         }
 
@@ -78,6 +85,20 @@ class Player extends GameObject {
 
             this.x = gameWidth - this.width;
         }
+    }
+
+    checkPlatformCollision(platform) {
+        const isTouchingTop = this.y + this.height >= platform.y;
+        const isOverlappingX = this.x + this.width >= platform.x && this.x < platform.x + platform.width;
+        const isFalling = this.velocityY > 0;
+        const isAbovePlatform = this.y < platform.y;
+
+        if(isTouchingTop && isOverlappingX && isFalling && isAbovePlatform) {
+            this.y = platform.y - this.height;
+            this.velocityY = 0;
+            this.isGrounded = true;
+        }
+        
     }
 
 }

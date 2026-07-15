@@ -1,5 +1,6 @@
     import Player from "../entities/player.js"
     import Input from "../input/input.js"
+    import Platform from "../entities/Platform.js";
 
     class Game {
 
@@ -27,6 +28,7 @@
 
             this.groundY = this.height - 100;
 
+            this.platforms = [new Platform(500,600,400,40), new Platform(900,450,300,40), new Platform(1400,300,250,40)];
         }
 
         start() {
@@ -59,7 +61,7 @@
 
         update(deltaTime) {
 
-            this.player.update(deltaTime, this.input, this.groundY, this.width);
+            this.player.update(deltaTime, this.input, this.groundY, this.width, this.platforms);
 
         }
 
@@ -67,6 +69,11 @@
 
             this.context.fillStyle = "black";
             this.context.fillRect(0,0,this.width,this.height);
+
+            for (const platform of this.platforms) {
+                platform.render(this.context);
+            }
+            
             this.player.render(this.context);
 
         }
