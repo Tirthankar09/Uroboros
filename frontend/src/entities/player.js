@@ -1,5 +1,5 @@
 import GameObject from "./GameObject.js"
-
+import Camera from "../camera/Camera.js"
 class Player extends GameObject {
     constructor() {
 
@@ -17,21 +17,22 @@ class Player extends GameObject {
 
         
         
-        this.handleInput(deltaTime, input);
+        
         this.applyGravity(deltaTime);
+        this.checkGroundCollision(groundY);
+        this.checkWallCollision(gameWidth);
         for(const platform of platforms) {
                 this.checkPlatformCollision(platform);
             }
-        this.checkGroundCollision(groundY);
-        this.checkWallCollision(gameWidth);
+        this.handleInput(deltaTime, input);
         
 
     }
 
-    render(context){
+    render(context,camera){
 
         context.fillStyle = "red";
-        context.fillRect(this.x,this.y,this.width,this.height);
+        context.fillRect(this.x - camera.x,this.y,this.width,this.height);
     }
 
     handleInput(deltaTime, input) {
@@ -77,6 +78,7 @@ class Player extends GameObject {
 
     checkWallCollision(gameWidth) {
 
+        console.log(gameWidth, this.x);
         if(this.x<0) {
             this.x = 0;
         }
@@ -94,6 +96,7 @@ class Player extends GameObject {
         const isAbovePlatform = this.y < platform.y;
 
         if(isTouchingTop && isOverlappingX && isFalling && isAbovePlatform) {
+
             this.y = platform.y - this.height;
             this.velocityY = 0;
             this.isGrounded = true;
