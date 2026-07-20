@@ -4,17 +4,28 @@ class Camera {
         this.width = width;
         this.height = height;
         this.worldWidth = worldWidth
+
         this.x = 0;
         this.y = 0;
+
+        this.deadZoneWidth = 500;
+        this.deadZoneLeft = (this.width - this.deadZoneWidth) / 4;
+        this.deadZoneRight = this.deadZoneLeft + this.deadZoneWidth;
     }
 
     update() {
 
-        if (this.target.x > this.width / 2) {
+        const playerScreenX = this.target.x - this.x;
 
-            this.x = this.target.x - this.width / 2;
+        if(playerScreenX > this.deadZoneRight) {
+            this.x += playerScreenX - this.deadZoneRight;
+        }
 
-        } else {
+        if(playerScreenX < this.deadZoneLeft) {
+            this.x -= this.deadZoneLeft - playerScreenX;
+        }
+
+        if (this.x < 0) {
             
             this.x = 0;
         }
@@ -22,7 +33,9 @@ class Camera {
         if (this.x + this.width > this.worldWidth) {
 
             this.x = this.worldWidth - this.width;
+
         }
+
 
 }
 }

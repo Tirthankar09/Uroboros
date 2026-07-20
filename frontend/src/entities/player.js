@@ -47,7 +47,7 @@ class Player extends GameObject {
 
         if (input.justPressedKeys.has(" ") && this.isGrounded) {
 
-            this.velocityY = -400;
+            this.velocityY = -400 * 1.5;
 
             this.isGrounded = false;
         }
@@ -56,7 +56,7 @@ class Player extends GameObject {
 
     applyGravity(deltaTime) {
 
-        this.velocityY  += 500 * deltaTime;
+        this.velocityY  += 500 *2* deltaTime;
 
         this.y += this.velocityY * deltaTime;
 
@@ -78,7 +78,6 @@ class Player extends GameObject {
 
     checkWallCollision(gameWidth) {
 
-        console.log(gameWidth, this.x);
         if(this.x<0) {
             this.x = 0;
         }
@@ -91,7 +90,7 @@ class Player extends GameObject {
 
     checkPlatformCollision(platform) {
         const isTouchingTop = this.y + this.height >= platform.y;
-        const isOverlappingX = this.x + this.width >= platform.x && this.x < platform.x + platform.width;
+        const isOverlappingX = this.x + this.width > platform.x && this.x < platform.x + platform.width;
         const isFalling = this.velocityY > 0;
         const isAbovePlatform = this.y < platform.y;
 

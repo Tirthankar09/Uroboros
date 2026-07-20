@@ -9,7 +9,7 @@
 
                 console.log("Game Created");
 
-                this.height = 900;
+                this.height = 860;
                 this.width = 1900;
                 this.worldWidth = 2900;
 
@@ -50,7 +50,7 @@
                     return;
                 }
                 
-                const deltaTime = (timestamp - this.previousTimeStamp) / 1000
+                const deltaTime = (timestamp - this.previousTimeStamp) / 1000;
 
                 this.previousTimeStamp = timestamp;
 
