@@ -1,87 +1,89 @@
-        import Player from "../entities/player.js"
-        import Input from "../input/input.js"
-        import Platform from "../entities/Platform.js"
-        import Camera from "../camera/Camera.js"
+import Player from "../entities/player.js"
+import Input from "../input/input.js"
+import Platform from "../entities/Platform.js"
+import Camera from "../camera/Camera.js"
 
-        class Game {
+class Game {
 
-            constructor() {
+    constructor(assets) {
 
-                console.log("Game Created");
+        console.log("Game Created");
 
-                this.height = 860;
-                this.width = 1900;
-                this.worldWidth = 2900;
+        this.height = 860;
+        this.width = 1900;
+        this.worldWidth = 2900;
 
-                this.canvas = document.createElement("canvas");
-                this.context = this.canvas.getContext("2d");
+        this.canvas = document.createElement("canvas");
+        this.context = this.canvas.getContext("2d");
 
-                this.canvas.height = this.height;
-                this.canvas.width = this.width;
+        this.canvas.height = this.height;
+        this.canvas.width = this.width;
 
-                this.canvas.style.backgroundColor = "black";
+        this.canvas.style.backgroundColor = "black";
 
-                document.body.appendChild(this.canvas);
+        document.body.appendChild(this.canvas);
 
-                this.input = new Input();
-                this.player = new Player();
+        this.input = new Input();
 
-                this.previousTimeStamp = 0;
+        this.player = new Player(assets);
 
-                this.groundY = this.height - 100;
+        this.previousTimeStamp = 0;
 
-                this.platforms = [new Platform(500,600,400,40), new Platform(900,450,300,40), new Platform(1400,300,250,40)];
+        this.groundY = this.height - 100;
 
-                this.camera = new Camera(this.player, this.width, this.height, this.worldWidth);
-            }
+        this.platforms = [new Platform(500,600,400,40), new Platform(900,450,300,40), new Platform(1400,300,250,40)];
 
-            start() {
+        this.camera = new Camera(this.player, this.width, this.height, this.worldWidth);
+    }
 
-                requestAnimationFrame((timestamp) => this.gameloop(timestamp));
-            } 
+    start() {
 
-            gameloop(timestamp) {
+        requestAnimationFrame((timestamp) => this.gameloop(timestamp));
+    } 
 
-                if(this.previousTimeStamp === 0) {
-                    this.previousTimeStamp = timestamp;
+    gameloop(timestamp) {
 
-                    requestAnimationFrame((timestamp) => this.gameloop(timestamp));
+        if(this.previousTimeStamp === 0) {
+            this.previousTimeStamp = timestamp;
 
-                    return;
-                }
-                
-                const deltaTime = (timestamp - this.previousTimeStamp) / 1000;
+            requestAnimationFrame((timestamp) => this.gameloop(timestamp));
 
-                this.previousTimeStamp = timestamp;
-
-                this.update(deltaTime);
-
-                this.render();
-
-                this.input.endframe();
-
-                requestAnimationFrame((timestamp) => this.gameloop(timestamp));
-            }
-
-            update(deltaTime) {
-
-                this.player.update(deltaTime, this.input, this.groundY, this.worldWidth, this.platforms);
-                this.camera.update();
-
-            }
-
-            render() {
-
-                this.context.fillStyle = "black";
-                this.context.fillRect(0,0,this.width,this.height);
-
-                for (const platform of this.platforms) {
-                    platform.render(this.context, this.camera);
-                }
-                
-                this.player.render(this.context, this.camera);
-
-            }
+            return;
         }
+        
+        const deltaTime = (timestamp - this.previousTimeStamp) / 1000;
 
-        export default Game; 
+        this.previousTimeStamp = timestamp;
+
+        this.update(deltaTime);
+
+        this.render();
+
+        this.input.endframe();
+
+        requestAnimationFrame((timestamp) => this.gameloop(timestamp));
+    }
+
+    update(deltaTime) {
+
+        
+        this.player.update(deltaTime, this.input, this.groundY, this.worldWidth, this.platforms);
+        this.camera.update();
+
+    }
+
+    render() {
+
+        this.context.fillStyle = "black";
+        this.context.fillRect(0,0,this.width,this.height);
+
+        for (const platform of this.platforms) {
+            platform.render(this.context, this.camera);
+        }
+        
+        this.player.render(this.context, this.camera);
+
+    }
+}
+
+export default Game; 
