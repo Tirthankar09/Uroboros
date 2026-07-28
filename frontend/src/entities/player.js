@@ -24,6 +24,8 @@ class Player extends GameObject {
         this.animationTimer -= this.frameDuration;
         this.frameDuration = 0.1;
 
+        this.facing = 1;
+
     }
 
     update(deltaTime, input, groundY, gameWidth, platforms) { 
@@ -61,7 +63,18 @@ class Player extends GameObject {
 
     render(context,camera){
 
+        if(this.facing === 1) {
+
         context.drawImage(this.currentAnimation[this.currentFrame],this.x-camera.x,this.y,this.width,this.height);
+        }
+        else{
+
+            context.save();
+            context.scale(-1,1);
+            context.drawImage(this.currentAnimation[this.currentFrame],-(this.x-camera.x)-this.width,this.y,this.width,this.height);
+            context.restore();
+
+        }
     }
 
     handleInput(deltaTime, input) {
@@ -70,10 +83,12 @@ class Player extends GameObject {
         
         if (input.pressedKeys.has("a")) {
             this.velocityX -= this.speed;
+            this.facing = -1;
         }
 
         if (input.pressedKeys.has("d")) {
             this.velocityX += this.speed;
+            this.facing = 1;
         }
 
         if (input.justPressedKeys.has(" ") && this.isGrounded) {
