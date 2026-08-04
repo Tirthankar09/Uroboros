@@ -15,40 +15,37 @@ class Player extends GameObject {
 
         this.animations = {
 
-            idle : [assets.get("idle1"),assets.get("idle2"),assets.get("idle3"),assets.get("idle4"),assets.get("idle5"),assets.get("idle6"),assets.get("idle7"),assets.get("idle8"),assets.get("idle9")],
+            idle : [assets.get("idle2"),assets.get("idle3"),assets.get("idle4"),assets.get("idle5"),assets.get("idle6"),assets.get("idle7"),assets.get("idle8"),assets.get("idle9")],
             run : [assets.get("run2"),assets.get("run3"),assets.get("run4"),assets.get("run5"),assets.get("run6"),assets.get("run7"),assets.get("run8")],
+            jump : [assets.get("jump1")],
+            fall : [assets.get("fall1")]
         };
 
         this.currentAnimation = this.animations.idle;
         this.currentFrame = 0;
-        this.animationTimer -= this.frameDuration;
         this.frameDuration = 0.1;
-
+        this.animationTimer = 0;
+        
         this.facing = 1;
+
+        this.state = "IDLE";
 
     }
 
     update(deltaTime, input, groundY, gameWidth, platforms) { 
-         
+ 
         this.handleInput(deltaTime, input);
         this.applyGravity(deltaTime);
         this.move(deltaTime);
-        this.isGrounded = false;
+        this.isGrounded = false; 
         this.checkGroundCollision(groundY);
         for(const platform of platforms) {
                 this.checkPlatformCollision(platform);
             }
         this.checkWallCollision(gameWidth);
-            
-
+        this.updateState();
+        this.animationUpdate();
         
-
-        if (this.velocityX === 0) {
-            this.changeAnimation(this.animations.idle);
-        }
-        else {
-            this.changeAnimation(this.animations.run);
-        }
         this.animationTimer += deltaTime;
         if(this.animationTimer >= this.frameDuration){
             this.currentFrame++;
@@ -152,7 +149,7 @@ class Player extends GameObject {
             this.velocityY = 0;
             this.isGrounded = true;
         }
-        
+
     }
 
     changeAnimation(animation){
@@ -161,6 +158,42 @@ class Player extends GameObject {
             this.currentAnimation = animation;
             this.currentFrame = 0;
             this.animationTimer = 0;
+        }
+    }
+
+    updateState() {
+        if(!this.isGrounded) {
+            if(this.velocityY < 0) {
+                this.state = "JUMP";
+            }
+            else{
+                this.state = "FALL";
+            }
+        }
+        else{
+            if(this.velocityX === 0) {
+                this.state = "IDLE";
+            }
+            else{
+                this.state = "RUN";
+            }
+        }
+    }
+
+    animationUpdate() {
+        switch (this.state) {
+            case "IDLE":
+                this.changeAnimation(this.animations.idle);
+                break;
+            case "RUN":
+                this.changeAnimation(this.animations.run);
+                break;
+            case "JUMP":
+                this.changeAnimation(this.animations.jump);
+                break;
+            case "FALL":
+                this.changeAnimation(this.animations.fall);
+                break;
         }
     }
 
