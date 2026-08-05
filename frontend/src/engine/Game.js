@@ -51,11 +51,11 @@ class Game {
             return;
         }
         
-        const deltaTime = (timestamp - this.previousTimeStamp) / 1000;
+        const deltatime = (timestamp - this.previousTimeStamp) / 1000;
 
         this.previousTimeStamp = timestamp;
 
-        this.update(deltaTime);
+        this.update(deltatime);
 
         this.render();
 
@@ -64,10 +64,10 @@ class Game {
         requestAnimationFrame((timestamp) => this.gameloop(timestamp));
     }
 
-    update(deltaTime) {
+    update(deltatime) {
 
         
-        this.player.update(deltaTime, this.input, this.groundY, this.worldWidth, this.platforms);
+        this.player.update(deltatime, this.input, this.groundY, this.worldWidth, this.platforms);
         this.camera.update();
 
     }

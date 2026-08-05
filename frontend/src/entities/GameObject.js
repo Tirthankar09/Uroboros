@@ -6,7 +6,7 @@ class GameObject {
         this.height = height;
     }
 
-    update(deltaTime) {
+    update(deltatime) {
 
     }
 

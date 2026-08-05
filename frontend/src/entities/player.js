@@ -34,24 +34,28 @@ class Player extends GameObject {
 
         this.state = "IDLE";
 
+        this.coyoteTimer = 0;
+        this.coyoteDuration = 0.15;
+
     }
 
-    update(deltaTime, input, groundY, gameWidth, platforms) { 
+    update(deltatime, input, groundY, gameWidth, platforms) { 
  
         this.previousY = this.y;
-        this.handleInput(deltaTime, input);
-        this.applyGravity(deltaTime);
-        this.move(deltaTime);
+        this.handleInput(deltatime, input);
+        this.applyGravity(deltatime);
+        this.move(deltatime);
         this.isGrounded = false; 
         this.checkGroundCollision(groundY);
         for(const platform of platforms) {
                 this.checkPlatformCollision(platform);
             }
         this.checkWallCollision(gameWidth);
+        this.updateCoyoteTime(deltatime);
         this.updateState();
         this.animationUpdate();
         
-        this.animationTimer += deltaTime;
+        this.animationTimer += deltatime;
         if(this.animationTimer >= this.frameDuration){
             this.currentFrame++;
             this.animationTimer = 0;
@@ -79,7 +83,7 @@ class Player extends GameObject {
         }
     }
 
-    handleInput(deltaTime, input) {
+    handleInput(deltatime, input) {
 
         this.velocityX = 0;
         
@@ -93,25 +97,25 @@ class Player extends GameObject {
             this.facing = 1;
         }
 
-        if (input.justPressedKeys.has(" ") && this.isGrounded) {
+        if (input.justPressedKeys.has(" ") && this.coyoteTimer > 0) {
 
             this.velocityY = -400 * 1.5;
-
+            this.coyoteTimer = 0;
             this.isGrounded = false;
         }
 
     }
 
-        applyGravity(deltaTime) {
+        applyGravity(deltatime) {
 
-            this.velocityY  += 500 *2* deltaTime;
+            this.velocityY  += 500 *2* deltatime;
 
         }
 
-        move(deltaTime) {
+        move(deltatime) {
 
-            this.x += this.velocityX * deltaTime;
-            this.y += this.velocityY * deltaTime;
+            this.x += this.velocityX * deltatime;
+            this.y += this.velocityY * deltatime;
 
         }
 
@@ -199,6 +203,16 @@ class Player extends GameObject {
             case "FALL":
                 this.changeAnimation(this.animations.fall);
                 break;
+        }
+    }
+
+    updateCoyoteTime(deltatime) {
+        
+        if (this.isGrounded === true) {
+            this.coyoteTimer = this.coyoteDuration;
+        }
+        else {
+            this.coyoteTimer -= deltatime
         }
     }
 
