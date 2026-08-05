@@ -4,7 +4,11 @@ import Camera from "../camera/Camera.js"
 class Player extends GameObject {
     constructor(assets) {
 
-        super(100,100,400,300);
+        super(100,100,90,200);
+        this.spriteWidth = 400;
+        this.spriteHeight = 370;
+        this.spriteOffsetX = -155;
+        this.spriteOffsetY = -88;
 
         this.speed = 500;
 
@@ -34,6 +38,7 @@ class Player extends GameObject {
 
     update(deltaTime, input, groundY, gameWidth, platforms) { 
  
+        this.previousY = this.y;
         this.handleInput(deltaTime, input);
         this.applyGravity(deltaTime);
         this.move(deltaTime);
@@ -59,16 +64,16 @@ class Player extends GameObject {
     }
 
     render(context,camera){
-
+        
         if(this.facing === 1) {
 
-        context.drawImage(this.currentAnimation[this.currentFrame],this.x-camera.x,this.y,this.width,this.height);
+        context.drawImage(this.currentAnimation[this.currentFrame], (this.x-camera.x)+this.spriteOffsetX, this.y+this.spriteOffsetY, this.spriteWidth, this.spriteHeight);
         }
         else{
 
             context.save();
             context.scale(-1,1);
-            context.drawImage(this.currentAnimation[this.currentFrame],-(this.x-camera.x)-this.width,this.y,this.width,this.height);
+            context.drawImage(this.currentAnimation[this.currentFrame], -(this.x-camera.x)-this.spriteWidth - this.spriteOffsetX, this.y + this.spriteOffsetY, this.spriteWidth, this.spriteHeight);
             context.restore();
 
         }
@@ -138,12 +143,12 @@ class Player extends GameObject {
 
     checkPlatformCollision(platform) {
         
+        const wasAbovePlatform = this.previousY + this.height <= platform.y;
         const isTouchingTop = this.y + this.height >= platform.y;
         const isOverlappingX = this.x + this.width > platform.x && this.x < platform.x + platform.width;
         const isFalling = this.velocityY > 0;
-        const isAbovePlatform = this.y < platform.y;
 
-        if(isTouchingTop && isOverlappingX && isFalling && isAbovePlatform) {
+        if(isTouchingTop && isOverlappingX && isFalling && wasAbovePlatform) {
 
             this.y = platform.y - this.height;
             this.velocityY = 0;
