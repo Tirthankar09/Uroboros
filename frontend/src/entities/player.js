@@ -22,7 +22,8 @@ class Player extends GameObject {
             idle : [assets.get("idle2"),assets.get("idle3"),assets.get("idle4"),assets.get("idle5"),assets.get("idle6"),assets.get("idle7"),assets.get("idle8"),assets.get("idle9")],
             run : [assets.get("run2"),assets.get("run3"),assets.get("run4"),assets.get("run5"),assets.get("run6"),assets.get("run7"),assets.get("run8")],
             jump : [assets.get("jump1")],
-            fall : [assets.get("fall1")]
+            fall : [assets.get("fall1")],
+            attack : [assets.get("attack1"), assets.get("attack4"), assets.get("attack5")]
         };
 
         this.currentAnimation = this.animations.idle;
@@ -37,10 +38,14 @@ class Player extends GameObject {
         this.coyoteTimer = 0;
         this.coyoteDuration = 0.15;
 
+        this.requestAttack = false;
+        this.lockState = false;
+
     }
 
     update(deltatime, input, groundY, gameWidth, platforms) { 
- 
+
+        
         this.previousY = this.y;
         this.handleInput(deltatime, input);
         this.applyGravity(deltatime);
@@ -60,6 +65,9 @@ class Player extends GameObject {
             this.currentFrame++;
             this.animationTimer = 0;
             if(this.currentFrame >= this.currentAnimation.length) {
+                if(this.state === "ATTACK") {
+                    this.lockState = false;
+                }
                 this.currentFrame = 0;
             }
         }
@@ -72,7 +80,9 @@ class Player extends GameObject {
         if(this.facing === 1) {
 
         context.drawImage(this.currentAnimation[this.currentFrame], (this.x-camera.x)+this.spriteOffsetX, this.y+this.spriteOffsetY, this.spriteWidth, this.spriteHeight);
+
         }
+
         else{
 
             context.save();
@@ -86,7 +96,11 @@ class Player extends GameObject {
     handleInput(deltatime, input) {
 
         this.velocityX = 0;
-        
+
+        if(this.state === "ATTACK") {
+            return;
+        }
+
         if (input.pressedKeys.has("a")) {
             this.velocityX -= this.speed;
             this.facing = -1;
@@ -102,6 +116,12 @@ class Player extends GameObject {
             this.velocityY = -400 * 1.5;
             this.coyoteTimer = 0;
             this.isGrounded = false;
+        }
+
+        if (input.justPressedMouseButtons.has(0)) {
+            
+            this.requestAttack = true;
+
         }
 
     }
@@ -171,6 +191,18 @@ class Player extends GameObject {
     }
 
     updateState() {
+
+        if (this.lockState) {
+            return;
+        }
+
+        if (this.requestAttack) {
+            this.state = "ATTACK";
+            this.lockState = true;
+            this.requestAttack = false;
+            return;
+        }
+
         if(!this.isGrounded) {
             if(this.velocityY < 0) {
                 this.state = "JUMP";
@@ -203,11 +235,14 @@ class Player extends GameObject {
             case "FALL":
                 this.changeAnimation(this.animations.fall);
                 break;
+            case "ATTACK":
+                this.changeAnimation(this.animations.attack);
+                break;
         }
     }
 
     updateCoyoteTime(deltatime) {
-        
+
         if (this.isGrounded === true) {
             this.coyoteTimer = this.coyoteDuration;
         }
