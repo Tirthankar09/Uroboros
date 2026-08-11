@@ -1,6 +1,7 @@
 import GameObject from "./GameObject.js"
 import Camera from "../camera/Camera.js"
 
+
 class Player extends GameObject {
     constructor(assets) {
 
@@ -23,7 +24,7 @@ class Player extends GameObject {
             run : [assets.get("run2"),assets.get("run3"),assets.get("run4"),assets.get("run5"),assets.get("run6"),assets.get("run7"),assets.get("run8")],
             jump : [assets.get("jump1")],
             fall : [assets.get("fall1")],
-            attack : [assets.get("attack1"), assets.get("attack4"), assets.get("attack5")]
+            attack : [assets.get("attack1"), assets.get("attack2"), assets.get("attack5")]
         };
 
         this.currentAnimation = this.animations.idle;
@@ -41,9 +42,14 @@ class Player extends GameObject {
         this.requestAttack = false;
         this.lockState = false;
 
+        this.attackWidth = 60;
+        this.attackHeight = 40;
+
+        this.hasHit = false;
+
     }
 
-    update(deltatime, input, groundY, gameWidth, platforms) { 
+    update(deltatime, input, groundY, gameWidth, platforms, enemy) { 
 
         
         this.previousY = this.y;
@@ -56,6 +62,7 @@ class Player extends GameObject {
                 this.checkPlatformCollision(platform);
             }
         this.checkWallCollision(gameWidth);
+        this.checkAttackCollision(enemy);
         this.updateCoyoteTime(deltatime);
         this.updateState();
         this.animationUpdate();
@@ -67,6 +74,7 @@ class Player extends GameObject {
             if(this.currentFrame >= this.currentAnimation.length) {
                 if(this.state === "ATTACK") {
                     this.lockState = false;
+                    this.hasHit = false;
                 }
                 this.currentFrame = 0;
             }
@@ -90,6 +98,13 @@ class Player extends GameObject {
             context.drawImage(this.currentAnimation[this.currentFrame], -(this.x-camera.x)-this.spriteWidth - this.spriteOffsetX, this.y + this.spriteOffsetY, this.spriteWidth, this.spriteHeight);
             context.restore();
 
+        }
+
+        if(this.state === "ATTACK" && this.currentFrame === 2) {
+
+            const [attackX, attackY, attackWidth, attackHeight] = this.getAttackHitBox();
+            context.strokeStyle = "red";
+            context.strokeRect(attackX - camera.x, attackY, attackWidth, attackHeight)
         }
     }
 
@@ -251,6 +266,37 @@ class Player extends GameObject {
         }
     }
 
+    getAttackHitBox() {
+        let attackX;
+        if (this.facing === 1) {
+            attackX = this.x + this.width;
+        }
+        else{
+            attackX = this.x - this.attackWidth;
+        }
+        const attackY = this.y + 30;
+
+        return [attackX, attackY, this.attackWidth, this.attackHeight];
+    }
+
+    checkAttackCollision(enemy) {
+        if (enemy.isDead()) {
+            return;
+        }
+        if (this.state === "ATTACK" && this.currentFrame === 2) {
+        const [attackX, attackY, attackWidth, attackHeight] = this.getAttackHitBox();
+
+        const isOverlappingX = attackX + attackWidth > enemy.x && attackX < enemy.x + enemy.width;
+        const isOverlappingY = attackY + attackHeight > enemy.height &&  attackY < enemy.y + enemy.height;
+
+        if(isOverlappingX && isOverlappingY && !this.hasHit) {
+            enemy.takeDamage(20);
+            console.log(enemy.health);
+            console.log(enemy.isDead());
+            this.hasHit = true;
+        }
+    }
+}
 }
 
 export default Player;

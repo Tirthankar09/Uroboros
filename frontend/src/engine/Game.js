@@ -2,6 +2,7 @@ import Player from "../entities/player.js"
 import Input from "../input/input.js"
 import Platform from "../entities/Platform.js"
 import Camera from "../camera/Camera.js"
+import Enemy from "../entities/enemy.js"
 
 class Game {
 
@@ -26,6 +27,8 @@ class Game {
         this.input = new Input();
 
         this.player = new Player(assets);
+
+        this.enemy = new Enemy();
 
         this.previousTimeStamp = 0;
 
@@ -67,7 +70,7 @@ class Game {
     update(deltatime) {
 
         
-        this.player.update(deltatime, this.input, this.groundY, this.worldWidth, this.platforms);
+        this.player.update(deltatime, this.input, this.groundY, this.worldWidth, this.platforms, this.enemy);
         this.camera.update();
 
     }
@@ -82,6 +85,7 @@ class Game {
         }
         
         this.player.render(this.context, this.camera);
+        this.enemy.render(this.context, this.camera);
 
     }
 }
