@@ -28,7 +28,7 @@ class Game {
 
         this.player = new Player(assets);
 
-        this.enemy = new Enemy();
+        this.enemy = new Enemy(assets);
 
         this.previousTimeStamp = 0;
 

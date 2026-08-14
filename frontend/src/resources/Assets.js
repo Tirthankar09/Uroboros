@@ -6,8 +6,9 @@ export default class Assets {
             run1: "../assets/sprites/running/0001.png",run2: "../assets/sprites/running/0002.png",run3: "../assets/sprites/running/0003.png",run4: "../assets/sprites/running/0004.png",run5: "../assets/sprites/running/0005.png",run6: "../assets/sprites/running/0006.png",run7: "../assets/sprites/running/0007.png",run8: "../assets/sprites/running/0008.png",
             jump1: "../assets/sprites/jump/0001.png",
             fall1: "../assets/sprites/fall/0001.png",
-            attack1: "../assets/sprites/attack/0001.png", attack2: "../assets/sprites/attack/0002.png", attack3: "../assets/sprites/attack/0003.png", attack4: "../assets/sprites/attack/0004.png", attack5: "../assets/sprites/attack/0005.png"};
-    
+            attack1: "../assets/sprites/attack/0001.png", attack2: "../assets/sprites/attack/0002.png", attack3: "../assets/sprites/attack/0003.png", attack4: "../assets/sprites/attack/0004.png", attack5: "../assets/sprites/attack/0005.png",
+            enemyIdle1: "../assets/sprites/enemyIdle/0001.png", enemyIdle2: "../assets/sprites/enemyIdle/0002.png", enemyIdle3: "../assets/sprites/enemyIdle/0003.png", enemyIdle4: "../assets/sprites/enemyIdle/0004.png", enemyIdle5: "../assets/sprites/enemyIdle/0005.png", enemyIdle6: "../assets/sprites/enemyIdle/0006.png", enemyIdle7: "../assets/sprites/enemyIdle/0007.png", enemyIdle8: "../assets/sprites/enemyIdle/0008.png", enemyIdle9: "../assets/sprites/enemyIdle/0009.png", enemyIdle10: "../assets/sprites/enemyIdle/0010.png"};
+            
         }
 
     async load() {

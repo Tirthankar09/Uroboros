@@ -128,7 +128,7 @@ class Player extends GameObject {
 
         if (input.justPressedKeys.has(" ") && this.coyoteTimer > 0) {
 
-            this.velocityY = -400 * 1.5;
+            this.velocityY = -400 * 2;
             this.coyoteTimer = 0;
             this.isGrounded = false;
         }
@@ -143,7 +143,7 @@ class Player extends GameObject {
 
         applyGravity(deltatime) {
 
-            this.velocityY  += 500 *2* deltatime;
+            this.velocityY  += 500 *3* deltatime;
 
         }
 
@@ -285,9 +285,8 @@ class Player extends GameObject {
         }
         if (this.state === "ATTACK" && this.currentFrame === 2) {
         const [attackX, attackY, attackWidth, attackHeight] = this.getAttackHitBox();
-
         const isOverlappingX = attackX + attackWidth > enemy.x && attackX < enemy.x + enemy.width;
-        const isOverlappingY = attackY + attackHeight > enemy.height &&  attackY < enemy.y + enemy.height;
+        const isOverlappingY = attackY + attackHeight > enemy.y &&  attackY < enemy.y + enemy.height;
 
         if(isOverlappingX && isOverlappingY && !this.hasHit) {
             enemy.takeDamage(20);
