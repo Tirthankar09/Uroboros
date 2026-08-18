@@ -54,7 +54,9 @@ class Game {
             return;
         }
         
-        const deltatime = (timestamp - this.previousTimeStamp) / 1000;
+        let deltatime = (timestamp - this.previousTimeStamp) / 1000;
+
+        deltatime = Math.min(deltatime, 0.05);
 
         this.previousTimeStamp = timestamp;
 
