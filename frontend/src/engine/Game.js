@@ -69,8 +69,8 @@ class Game {
 
     update(deltatime) {
 
-        
         this.player.update(deltatime, this.input, this.groundY, this.worldWidth, this.platforms, this.enemy);
+        this.enemy.update(deltatime,this.groundY, this.platforms);
         this.camera.update();
 
     }

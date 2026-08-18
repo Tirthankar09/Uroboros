@@ -7,9 +7,10 @@ export default class Assets {
             jump1: "../assets/sprites/jump/0001.png",
             fall1: "../assets/sprites/fall/0001.png",
             attack1: "../assets/sprites/attack/0001.png", attack2: "../assets/sprites/attack/0002.png", attack3: "../assets/sprites/attack/0003.png", attack4: "../assets/sprites/attack/0004.png", attack5: "../assets/sprites/attack/0005.png",
-            enemyIdle1: "../assets/sprites/enemyIdle/0001.png", enemyIdle2: "../assets/sprites/enemyIdle/0002.png", enemyIdle3: "../assets/sprites/enemyIdle/0003.png", enemyIdle4: "../assets/sprites/enemyIdle/0004.png", enemyIdle5: "../assets/sprites/enemyIdle/0005.png", enemyIdle6: "../assets/sprites/enemyIdle/0006.png", enemyIdle7: "../assets/sprites/enemyIdle/0007.png", enemyIdle8: "../assets/sprites/enemyIdle/0008.png", enemyIdle9: "../assets/sprites/enemyIdle/0009.png", enemyIdle10: "../assets/sprites/enemyIdle/0010.png"};
-            
-        }
+            enemyIdle1: "../assets/sprites/enemyIdle/0001.png", enemyIdle2: "../assets/sprites/enemyIdle/0002.png", enemyIdle3: "../assets/sprites/enemyIdle/0003.png", enemyIdle4: "../assets/sprites/enemyIdle/0004.png", enemyIdle5: "../assets/sprites/enemyIdle/0005.png", enemyIdle6: "../assets/sprites/enemyIdle/0006.png", enemyIdle7: "../assets/sprites/enemyIdle/0007.png", enemyIdle8: "../assets/sprites/enemyIdle/0008.png", enemyIdle9: "../assets/sprites/enemyIdle/0009.png", enemyIdle10: "../assets/sprites/enemyIdle/0010.png",
+            enemyAttack1: "../assets/sprites/enemyAttack/0001.png", enemyAttack2: "../assets/sprites/enemyAttack/0002.png", enemyAttack3: "../assets/sprites/enemyAttack/0003.png", enemyAttack4: "../assets/sprites/enemyAttack/0004.png", enemyAttack5: "../assets/sprites/enemyAttack/0005.png", enemyAttack6: "../assets/sprites/enemyAttack/0006.png", enemyAttack7: "../assets/sprites/enemyAttack/0007.png", enemyAttack8: "../assets/sprites/enemyAttack/0008.png", enemyAttack9: "../assets/sprites/enemyAttack/0009.png", enemyAttack10: "../assets/sprites/enemyAttack/0010.png", enemyAttack11: "../assets/sprites/enemyAttack/0011.png", enemyAttack12: "../assets/sprites/enemyAttack/0012.png", enemyAttack13: "../assets/sprites/enemyAttack/0013.png", enemyAttack14: "../assets/sprites/enemyAttack/0014.png", enemyAttack15: "../assets/sprites/enemyAttack/0015.png"
+        };
+    }
 
     async load() {
         for(const key of Object.keys(this.assetsList)) {

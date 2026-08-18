@@ -42,8 +42,8 @@ class Player extends GameObject {
         this.requestAttack = false;
         this.lockState = false;
 
-        this.attackWidth = 60;
-        this.attackHeight = 40;
+        this.attackWidth = 70;
+        this.attackHeight = 20;
 
         this.hasHit = false;
 
@@ -100,12 +100,6 @@ class Player extends GameObject {
 
         }
 
-        if(this.state === "ATTACK" && this.currentFrame === 2) {
-
-            const [attackX, attackY, attackWidth, attackHeight] = this.getAttackHitBox();
-            context.strokeStyle = "red";
-            context.strokeRect(attackX - camera.x, attackY, attackWidth, attackHeight)
-        }
     }
 
     handleInput(deltatime, input) {
@@ -274,7 +268,7 @@ class Player extends GameObject {
         else{
             attackX = this.x - this.attackWidth;
         }
-        const attackY = this.y + 30;
+        const attackY = this.y + 20;
 
         return [attackX, attackY, this.attackWidth, this.attackHeight];
     }
