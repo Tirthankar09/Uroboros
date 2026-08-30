@@ -46,6 +46,10 @@ class Player extends GameObject {
         this.attackHeight = 20;
 
         this.hasHit = false;
+        this.health = 100;
+
+        this.hitFlashTimer = 0;
+        this.hitFlashDuration = 0.1;
 
     }
 
@@ -63,6 +67,9 @@ class Player extends GameObject {
             }
         this.checkWallCollision(gameWidth);
         this.checkAttackCollision(enemy);
+        if(this.hitFlashTimer > 0) {
+            this.hitFlashTimer -= deltatime;
+        }
         this.updateCoyoteTime(deltatime);
         this.updateState();
         this.animationUpdate();
@@ -85,21 +92,26 @@ class Player extends GameObject {
 
     render(context,camera){
         
-        if(this.facing === 1) {
+        if(!this.isDead()|| this.hitFlashTimer > 0){
+            if(this.hitFlashTimer > 0) {
+                context.filter = "brightness(0) invert(1)";
+            }
+            
+            if(this.facing === 1) {
 
-        context.drawImage(this.currentAnimation[this.currentFrame], (this.x-camera.x)+this.spriteOffsetX, this.y+this.spriteOffsetY, this.spriteWidth, this.spriteHeight);
+            context.drawImage(this.currentAnimation[this.currentFrame], (this.x-camera.x)+this.spriteOffsetX, this.y+this.spriteOffsetY, this.spriteWidth, this.spriteHeight);
+            context.filter = "none";
+            }
 
+            else{
+
+                context.save();
+                context.scale(-1,1);
+                context.drawImage(this.currentAnimation[this.currentFrame], -(this.x-camera.x)-this.spriteWidth - this.spriteOffsetX, this.y + this.spriteOffsetY, this.spriteWidth, this.spriteHeight);
+                context.restore();
+                context.filter = "none";
+            }
         }
-
-        else{
-
-            context.save();
-            context.scale(-1,1);
-            context.drawImage(this.currentAnimation[this.currentFrame], -(this.x-camera.x)-this.spriteWidth - this.spriteOffsetX, this.y + this.spriteOffsetY, this.spriteWidth, this.spriteHeight);
-            context.restore();
-
-        }
-
     }
 
     handleInput(deltatime, input) {
@@ -274,22 +286,36 @@ class Player extends GameObject {
     }
 
     checkAttackCollision(enemy) {
-        if (enemy.isDead()) {
+        if (this.isDead()) {
             return;
         }
         if (this.state === "ATTACK" && this.currentFrame === 2) {
-        const [attackX, attackY, attackWidth, attackHeight] = this.getAttackHitBox();
-        const isOverlappingX = attackX + attackWidth > enemy.x && attackX < enemy.x + enemy.width;
-        const isOverlappingY = attackY + attackHeight > enemy.y &&  attackY < enemy.y + enemy.height;
+            const [attackX, attackY, attackWidth, attackHeight] = this.getAttackHitBox();
+            const isOverlappingX = attackX + attackWidth > enemy.x && attackX < enemy.x + enemy.width;
+            const isOverlappingY = attackY + attackHeight > enemy.y &&  attackY < enemy.y + enemy.height;
 
-        if(isOverlappingX && isOverlappingY && !this.hasHit) {
-            enemy.takeDamage(20);
-            console.log(enemy.health);
-            console.log(enemy.isDead());
-            this.hasHit = true;
+            if(isOverlappingX && isOverlappingY && !this.hasHit) {
+                enemy.takeDamage(20);
+                console.log(enemy.health);
+                console.log(enemy.isDead());
+                this.hasHit = true;
+            }
         }
     }
-}
+
+    takeDamage(damage){
+        if (this.isDead()) {
+            return;
+        }
+        this.health = Math.max(0, this.health - damage);
+        this.hitFlashTimer = this.hitFlashDuration;
+    }
+
+    isDead() {
+        return this.health <= 0;
+    }
+
+
 }
 
 export default Player;

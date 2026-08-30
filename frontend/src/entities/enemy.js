@@ -3,14 +3,14 @@ import GameObject from "./GameObject";
 class Enemy extends GameObject {
     constructor(assets) {
 
-        super(500,50,100,210);
+        super(700,50,100,210);
         this.spriteOffsetX = -150;
-        this.spriteOffsetY = -114;
+        this.spriteOffsetY = -115;
         this.spriteWidth = 400;
         this.spriteHeight = 400;
         this.health = 100;
         this.animations = {idle : [assets.get("enemyIdle1"), assets.get("enemyIdle2"), assets.get("enemyIdle3"), assets.get("enemyIdle4"), assets.get("enemyIdle5"), assets.get("enemyIdle6"), assets.get("enemyIdle7"), assets.get("enemyIdle8"), assets.get("enemyIdle9"), assets.get("enemyIdle10")],
-            attack : [assets.get("enemyAttack1"), assets.get("enemyAttack3"), assets.get("enemyAttack5"), assets.get("enemyAttack7"), assets.get("enemyAttack9"), assets.get("enemyAttack10"), assets.get("enemyAttack11"), assets.get("enemyAttack12"), assets.get("enemyAttack13"), assets.get("enemyAttack14"), assets.get("enemyAttack15")]
+            attack : [assets.get("enemyAttack1"),assets.get("enemyAttack2"), assets.get("enemyAttack3"), assets.get("enemyAttack5"), assets.get("enemyAttack7"), assets.get("enemyAttack9"), assets.get("enemyAttack10"), assets.get("enemyAttack11"), assets.get("enemyAttack12"), assets.get("enemyAttack13"), assets.get("enemyAttack14")]
         };
         this.currentAnimation = this.animations.idle;
         this.currentFrame = 0;
@@ -22,10 +22,15 @@ class Enemy extends GameObject {
         this.isGrounded = false;
         this.hitFlashTimer = 0;
         this.hitFlashDuration = 0.1;
+        this.attackRange = 250;
+        this.directionX = 0;
+        this.lockState = false;
+        this.hasHit = false;
     }
 
-    update(deltatime,groundY,platforms) {
+    update(deltatime,groundY,platforms, player) {
 
+        this.directionX = Math.abs(this.x-player.x)
         this.isGrounded = false;
         this.previousY = this.y;
         if(this.hitFlashTimer > 0) {
@@ -38,13 +43,17 @@ class Enemy extends GameObject {
         for (const platform of platforms) {
             this.checkPlatformCollision(platform);
         }
-
+        this.checkAttackCollision(player);
         this.animationTimer += deltatime;
         if(this.animationTimer >= this.frameDuration) {
             this.currentFrame++;
             this.animationTimer = 0;
             if (this.currentFrame >= this.currentAnimation.length) {
-                this.currentFrame = 0;
+                if(this.state === "ATTACK") {
+                    this.lockState = false;
+                    this.hasHit = false;
+                }
+                    this.currentFrame = 0;
             }
         }
 
@@ -66,7 +75,10 @@ class Enemy extends GameObject {
     }
 
     takeDamage(damage){
-        this.health -= damage;
+        if(this.isDead()) {
+            return;
+        }
+        this.health = Math.max(0, this.health - damage);
         this.hitFlashTimer = this.hitFlashDuration;
     }
 
@@ -114,13 +126,18 @@ class Enemy extends GameObject {
     }
 
     updateState() {
-        if(this.isGrounded) {
-            this.state = "ATTACK";
+        if(this.lockState) {
+            return;
         }
-        else{
-            this.state = "IDLE"
-        }
+            if(this.directionX <= this.attackRange) {
+                this.state = "ATTACK";
+                this.lockState = true;
+            }
+            else{
+                this.state = "IDLE";
+            }
     }
+
     AnimationUpdate() {
         switch(this.state) {
             case "IDLE": 
@@ -131,7 +148,63 @@ class Enemy extends GameObject {
                 break;
 
         }
+    }   
+
+    getAttackHitBox() {
+        if(this.state === "ATTACK") {
+            let attackX;
+            let attackY;
+            let attackWidth;
+            let attackHeight;
+
+            if(this.currentFrame === 2) {
+                attackWidth = 80;
+                attackHeight = 10;
+                attackY = this.y + 50;
+            }
+
+            if(this.currentFrame === 3) {
+                attackWidth = 100;
+                attackHeight = 10;
+                attackY = this.y;
+            }
+
+            if(this.currentFrame >= 4) {
+                attackWidth = 120;
+                attackHeight = 10;
+                attackY = this.y - 20;
+            }
+
+            attackX = this.x - attackWidth;
+
+            return[attackX, attackY, attackWidth, attackHeight];
+        }
     }
+
+    checkAttackCollision(player) {
+
+        if(this.isDead()) {
+            return;
+        }
+
+        if (player.isDead()) {
+            return;
+        }
+
+        if(this.state === "ATTACK" && this.currentFrame >= 2 && this.currentFrame <= 10) {
+
+            const [attackX, attackY, attackWidth, attackHeight] =this.getAttackHitBox();
+            const isOverlappingX = attackX < player.x + player.width && attackX + attackWidth > player.x;
+            const isOverlappingY = attackY < player.y + player.height && attackY + attackHeight > player.y;
+
+            if(isOverlappingX && isOverlappingY && !this.hasHit) {
+                player.takeDamage(20);
+                this.hasHit = true;
+                console.log("player hit");
+            }
+        }
+    }
+
 
 } 
 

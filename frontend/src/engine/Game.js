@@ -34,7 +34,7 @@ class Game {
 
         this.groundY = this.height - 100;
 
-        this.platforms = [new Platform(500,600,400,40), new Platform(900,450,300,40), new Platform(1400,300,250,40)];
+        this.platforms = [new Platform(300,600,500,40), new Platform(900,450,300,40), new Platform(1400,300,250,40)];
 
         this.camera = new Camera(this.player, this.width, this.height, this.worldWidth);
     }
@@ -72,7 +72,7 @@ class Game {
     update(deltatime) {
 
         this.player.update(deltatime, this.input, this.groundY, this.worldWidth, this.platforms, this.enemy);
-        this.enemy.update(deltatime,this.groundY, this.platforms);
+        this.enemy.update(deltatime,this.groundY, this.platforms, this.player);
         this.camera.update();
 
     }
@@ -86,8 +86,8 @@ class Game {
             platform.render(this.context, this.camera);
         }
         
-        this.player.render(this.context, this.camera);
         this.enemy.render(this.context, this.camera);
+        this.player.render(this.context, this.camera);
 
     }
 }
