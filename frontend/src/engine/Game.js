@@ -37,6 +37,7 @@ class Game {
         this.platforms = [new Platform(300,600,500,40), new Platform(900,450,300,40), new Platform(1400,300,250,40)];
 
         this.camera = new Camera(this.player, this.width, this.height, this.worldWidth);
+
     }
 
     start() {
@@ -74,7 +75,6 @@ class Game {
         this.player.update(deltatime, this.input, this.groundY, this.worldWidth, this.platforms, this.enemy);
         this.enemy.update(deltatime,this.groundY, this.platforms, this.player);
         this.camera.update();
-
     }
 
     render() {
@@ -88,6 +88,15 @@ class Game {
         
         this.enemy.render(this.context, this.camera);
         this.player.render(this.context, this.camera);
+        if(this.player.isDead() && this.player.deadAnimationFinished && this.player.deadScreenReady) {
+            this.context.fillStyle = "rgba(0, 0, 0, 0.6)";
+            this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+            this.context.fillStyle = "red";
+            this.context.font = "bold 60px Lucida Console";
+            this.context.textAlign = "center";
+            this.context.fillText("YOU DIED.",this.canvas.width / 2,this.canvas.height / 2);
+        }
 
     }
 }

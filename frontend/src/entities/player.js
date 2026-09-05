@@ -52,6 +52,11 @@ class Player extends GameObject {
         this.hitFlashTimer = 0;
         this.hitFlashDuration = 0.1;
 
+        this.deadAnimationFinished = false;
+        this.deadScreenTimer = 0;
+        this.deadScreenDelay = 0.3;
+        this.deadScreenReady = false;
+
     }
 
     update(deltatime, input, groundY, gameWidth, platforms, enemy) { 
@@ -82,6 +87,7 @@ class Player extends GameObject {
         if (this.animationTimer >= this.frameDuration) {
             this.animationTimer = 0;
             if (this.state === "DEAD" && this.currentFrame === this.currentAnimation.length - 1) {
+                this.deadAnimationFinished = true;
             } 
             else {
                 this.currentFrame++;
@@ -93,11 +99,15 @@ class Player extends GameObject {
                 }
                 this.currentFrame = 0; 
         }
-}
-
-        
-
     }
+        if(this.deadAnimationFinished && !this.deadScreenReady) {
+            this.deadScreenTimer += deltatime;
+        }
+
+        if(this.deadScreenTimer >= this.deadScreenDelay) {
+            this.deadScreenReady = true;
+        }
+}
 
     render(context,camera){
         
