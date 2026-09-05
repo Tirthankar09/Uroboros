@@ -26,6 +26,7 @@ class Enemy extends GameObject {
         this.directionX = 0;
         this.lockState = false;
         this.hasHit = false;
+        this.attackFinished = false;
     }
 
     update(deltatime,groundY,platforms, player) {
@@ -52,14 +53,13 @@ class Enemy extends GameObject {
                 if(this.state === "ATTACK") {
                     this.lockState = false;
                     this.hasHit = false;
+                    this.attackFinished = true;
                 }
                     this.currentFrame = 0;
             }
         }
-
-        this.updateState();
+        this.updateState(player);
         this.AnimationUpdate();
-
     }
 
     render(context,camera) {
@@ -125,17 +125,29 @@ class Enemy extends GameObject {
         }
     }
 
-    updateState() {
+    updateState(player) {
+        
+        if(this.state === "ATTACK" && this.attackFinished) {
+            this.state = "IDLE";
+            return;
+        }
+
+        if(player.isDead()) {
+            return;
+        }
+
         if(this.lockState) {
             return;
         }
-            if(this.directionX <= this.attackRange) {
-                this.state = "ATTACK";
-                this.lockState = true;
-            }
-            else{
-                this.state = "IDLE";
-            }
+        
+        if(this.directionX <= this.attackRange) {
+            this.state = "ATTACK";
+            this.lockState = true;
+            this.attackFinished = false;
+        }
+        else{
+            this.state = "IDLE";
+        }
     }
 
     AnimationUpdate() {
@@ -145,6 +157,9 @@ class Enemy extends GameObject {
                 break;
             case "ATTACK":
                 this.changeAnimation(this.animations.attack);
+                break;
+            case "DEAD":
+                this.changeAnimation(this.animations.dead);
                 break;
 
         }

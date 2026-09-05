@@ -24,7 +24,8 @@ class Player extends GameObject {
             run : [assets.get("run2"),assets.get("run3"),assets.get("run4"),assets.get("run5"),assets.get("run6"),assets.get("run7"),assets.get("run8")],
             jump : [assets.get("jump1")],
             fall : [assets.get("fall1")],
-            attack : [assets.get("attack1"), assets.get("attack2"), assets.get("attack5")]
+            attack : [assets.get("attack1"), assets.get("attack2"), assets.get("attack5")],
+            dead: [assets.get("dead1"),assets.get("dead2"),assets.get("dead3"),assets.get("dead4"),assets.get("dead5"),assets.get("dead6"),assets.get("dead7"),assets.get("dead8"),assets.get("dead9"),assets.get("dead10"),assets.get("dead11"),assets.get("dead13"),assets.get("dead15"),assets.get("dead17"),assets.get("dead19"),assets.get("dead21"),assets.get("dead23"),assets.get("dead25"),assets.get("dead27"),assets.get("dead29"),assets.get("dead30")]
         };
 
         this.currentAnimation = this.animations.idle;
@@ -55,9 +56,12 @@ class Player extends GameObject {
 
     update(deltatime, input, groundY, gameWidth, platforms, enemy) { 
 
-        
         this.previousY = this.y;
+
+        if(this.state !== "DEAD") {
         this.handleInput(deltatime, input);
+        }
+
         this.applyGravity(deltatime);
         this.move(deltatime);
         this.isGrounded = false; 
@@ -75,24 +79,28 @@ class Player extends GameObject {
         this.animationUpdate();
         
         this.animationTimer += deltatime;
-        if(this.animationTimer >= this.frameDuration){
-            this.currentFrame++;
+        if (this.animationTimer >= this.frameDuration) {
             this.animationTimer = 0;
-            if(this.currentFrame >= this.currentAnimation.length) {
-                if(this.state === "ATTACK") {
+            if (this.state === "DEAD" && this.currentFrame === this.currentAnimation.length - 1) {
+            } 
+            else {
+                this.currentFrame++;
+            }
+            if (this.currentFrame >= this.currentAnimation.length) {
+                if (this.state === "ATTACK") {
                     this.lockState = false;
                     this.hasHit = false;
                 }
-                this.currentFrame = 0;
-            }
+                this.currentFrame = 0; 
         }
+}
+
         
 
     }
 
     render(context,camera){
         
-        if(!this.isDead()|| this.hitFlashTimer > 0){
             if(this.hitFlashTimer > 0) {
                 context.filter = "brightness(0) invert(1)";
             }
@@ -112,7 +120,6 @@ class Player extends GameObject {
                 context.filter = "none";
             }
         }
-    }
 
     handleInput(deltatime, input) {
 
@@ -213,6 +220,11 @@ class Player extends GameObject {
 
     updateState() {
 
+        if(this.isDead()) {
+            this.state = "DEAD";
+            this.velocityX = 0;
+            return;
+        }
         if (this.lockState) {
             return;
         }
@@ -258,6 +270,9 @@ class Player extends GameObject {
                 break;
             case "ATTACK":
                 this.changeAnimation(this.animations.attack);
+                break;
+            case "DEAD":
+                this.changeAnimation(this.animations.dead);
                 break;
         }
     }
