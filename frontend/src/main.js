@@ -1,5 +1,5 @@
 import Game from "./engine/Game.js";
-
+import "./style.css";
 import Assets from "./resources/Assets.js";
 
 const assets = new Assets();

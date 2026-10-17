@@ -35,8 +35,7 @@ class Camera {
             this.x = this.worldWidth - this.width;
 
         }
-
-
+    }
 }
-}
+
 export default Camera

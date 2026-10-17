@@ -3,6 +3,8 @@ import Input from "../input/input.js"
 import Platform from "../entities/Platform.js"
 import Camera from "../camera/Camera.js"
 import Enemy from "../entities/enemy.js"
+import Floor from "../entities/Floor.js"
+import Background from "../entities/background.js"
 
 class Game {
 
@@ -10,17 +12,15 @@ class Game {
 
         console.log("Game Created");
 
-        this.height = 860;
-        this.width = 1900;
+        this.height = 1080;
+        this.width = 1920;
         this.worldWidth = 2900;
 
         this.canvas = document.createElement("canvas");
         this.context = this.canvas.getContext("2d");
 
         this.canvas.height = this.height;
-        this.canvas.width = this.width;
-
-        this.canvas.style.backgroundColor = "black";
+        this.canvas.width = this.width;;
 
         document.body.appendChild(this.canvas);
 
@@ -32,11 +32,15 @@ class Game {
 
         this.previousTimeStamp = 0;
 
-        this.groundY = this.height - 100;
+        this.groundY = this.height - 150;
 
-        this.platforms = [new Platform(300,600,500,40), new Platform(900,450,300,40), new Platform(1400,300,250,40)];
+        this.platforms = [new Platform(500,780,300,80,assets.get("platform")), new Platform(1000,580,300,80,assets.get("platform")), new Platform(1500,380,300,80,assets.get("platform"))];
 
         this.camera = new Camera(this.player, this.width, this.height, this.worldWidth);
+
+        this.floor = new Floor(0, this.groundY, this.worldWidth, this.height - this.groundY, assets.get("floor"));
+
+        this.background = new Background(0, 0 , this.worldWidth, this.height, assets.get("background"));
 
     }
 
@@ -71,7 +75,7 @@ class Game {
     }
 
     update(deltatime) {
-
+        
         this.player.update(deltatime, this.input, this.groundY, this.worldWidth, this.platforms, this.enemy);
         this.enemy.update(deltatime,this.groundY, this.platforms, this.player);
         this.camera.update();
@@ -79,8 +83,12 @@ class Game {
 
     render() {
 
+        
         this.context.fillStyle = "black";
         this.context.fillRect(0,0,this.width,this.height);
+
+        this.background.render(this.context, this.camera);
+        this.floor.render(this.context, this.camera);
 
         for (const platform of this.platforms) {
             platform.render(this.context, this.camera);
@@ -96,8 +104,7 @@ class Game {
             this.context.font = "bold 60px Lucida Console";
             this.context.textAlign = "center";
             this.context.fillText("YOU DIED.",this.canvas.width / 2,this.canvas.height / 2);
-        }
-
+        }   
     }
 }
 

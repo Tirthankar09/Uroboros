@@ -3,11 +3,11 @@ import GameObject from "./GameObject";
 class Enemy extends GameObject {
     constructor(assets) {
 
-        super(700,50,100,210);
-        this.spriteOffsetX = -150;
-        this.spriteOffsetY = -115;
-        this.spriteWidth = 400;
-        this.spriteHeight = 400;
+        super(700,40,130,280);
+        this.spriteOffsetX = -183;
+        this.spriteOffsetY = -107;
+        this.spriteWidth = 480;
+        this.spriteHeight = 480;
         this.health = 100;
         this.animations = {idle : [assets.get("enemyIdle1"), assets.get("enemyIdle2"), assets.get("enemyIdle3"), assets.get("enemyIdle4"), assets.get("enemyIdle5"), assets.get("enemyIdle6"), assets.get("enemyIdle7"), assets.get("enemyIdle8"), assets.get("enemyIdle9"), assets.get("enemyIdle10")],
             attack : [assets.get("enemyAttack1"),assets.get("enemyAttack2"), assets.get("enemyAttack3"), assets.get("enemyAttack5"), assets.get("enemyAttack7"), assets.get("enemyAttack9"), assets.get("enemyAttack10"), assets.get("enemyAttack11"), assets.get("enemyAttack12"), assets.get("enemyAttack13"), assets.get("enemyAttack14")]
@@ -175,25 +175,26 @@ class Enemy extends GameObject {
             if(this.currentFrame === 2) {
                 attackWidth = 80;
                 attackHeight = 10;
-                attackY = this.y + 50;
+                attackY = this.y + 90;
             }
 
             if(this.currentFrame === 3) {
                 attackWidth = 100;
                 attackHeight = 10;
-                attackY = this.y;
+                attackY = this.y + 30;
             }
 
             if(this.currentFrame >= 4) {
                 attackWidth = 120;
                 attackHeight = 10;
-                attackY = this.y - 20;
+                attackY = this.y + 10;
             }
 
             attackX = this.x - attackWidth;
 
             return[attackX, attackY, attackWidth, attackHeight];
         }
+        return [0,0,0,0];
     }
 
     checkAttackCollision(player) {

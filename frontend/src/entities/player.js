@@ -5,11 +5,11 @@ import Camera from "../camera/Camera.js"
 class Player extends GameObject {
     constructor(assets) {
 
-        super(100,100,90,200);
-        this.spriteWidth = 400;
-        this.spriteHeight = 370;
-        this.spriteOffsetX = -155;
-        this.spriteOffsetY = -88;
+        super(100,100,100,250);
+        this.spriteWidth = 480;
+        this.spriteHeight = 480;
+        this.spriteOffsetX = -188;
+        this.spriteOffsetY = -120;
 
         this.speed = 500;
 
@@ -25,7 +25,7 @@ class Player extends GameObject {
             jump : [assets.get("jump1")],
             fall : [assets.get("fall1")],
             attack : [assets.get("attack1"), assets.get("attack2"), assets.get("attack5")],
-            dead: [assets.get("dead1"),assets.get("dead2"),assets.get("dead3"),assets.get("dead4"),assets.get("dead5"),assets.get("dead6"),assets.get("dead7"),assets.get("dead8"),assets.get("dead9"),assets.get("dead10"),assets.get("dead11"),assets.get("dead13"),assets.get("dead15"),assets.get("dead17"),assets.get("dead19"),assets.get("dead21"),assets.get("dead23"),assets.get("dead25"),assets.get("dead27"),assets.get("dead29"),assets.get("dead30")]
+            dead: [assets.get("dead1"),assets.get("dead4"),assets.get("dead6"),assets.get("dead7"),assets.get("dead8"),assets.get("dead10"),assets.get("dead13"),assets.get("dead15"),assets.get("dead17"),assets.get("dead19"),assets.get("dead21"),assets.get("dead23"),assets.get("dead25"),assets.get("dead27"),assets.get("dead30")]
         };
 
         this.currentAnimation = this.animations.idle;
@@ -43,7 +43,7 @@ class Player extends GameObject {
         this.requestAttack = false;
         this.lockState = false;
 
-        this.attackWidth = 70;
+        this.attackWidth = 80;
         this.attackHeight = 20;
 
         this.hasHit = false;
@@ -110,13 +110,14 @@ class Player extends GameObject {
 }
 
     render(context,camera){
-        
+
             if(this.hitFlashTimer > 0) {
                 context.filter = "brightness(0) invert(1)";
             }
             
             if(this.facing === 1) {
 
+            
             context.drawImage(this.currentAnimation[this.currentFrame], (this.x-camera.x)+this.spriteOffsetX, this.y+this.spriteOffsetY, this.spriteWidth, this.spriteHeight);
             context.filter = "none";
             }
@@ -235,6 +236,7 @@ class Player extends GameObject {
             this.velocityX = 0;
             return;
         }
+        
         if (this.lockState) {
             return;
         }
