@@ -12,9 +12,9 @@ class Game {
 
         console.log("Game Created");
 
-        this.height = 1080;
         this.width = 1920;
-        this.worldWidth = 2900;
+        this.height = 1080;
+        this.worldWidth = 5900;
 
         this.canvas = document.createElement("canvas");
         this.context = this.canvas.getContext("2d");
@@ -34,11 +34,11 @@ class Game {
 
         this.groundY = this.height - 150;
 
-        this.platforms = [new Platform(500,780,300,80,assets.get("platform")), new Platform(1000,580,300,80,assets.get("platform")), new Platform(1500,380,300,80,assets.get("platform"))];
+        this.platforms = [new Platform(500,720,300,80,assets.get("platform")), new Platform(900,580,300,80,assets.get("platform")), new Platform(2200,750,300,80,assets.get("platform"))];
 
         this.camera = new Camera(this.player, this.width, this.height, this.worldWidth);
 
-        this.floor = new Floor(0, this.groundY, this.worldWidth, this.height - this.groundY, assets.get("floor"));
+        this.floors = [new Floor(0, this.groundY, 1000, this.height - this.groundY, assets.get("floor")), new Floor(1500, this.groundY, this.worldWidth, this.height - this.groundY, assets.get("floor"))];
 
         this.background = new Background(0, 0 , this.worldWidth, this.height, assets.get("background"));
 
@@ -76,7 +76,7 @@ class Game {
 
     update(deltatime) {
         
-        this.player.update(deltatime, this.input, this.groundY, this.worldWidth, this.platforms, this.enemy);
+        this.player.update(deltatime, this.input, this.groundY, this.worldWidth, this.platforms, this.enemy, this.floors);
         this.enemy.update(deltatime,this.groundY, this.platforms, this.player);
         this.camera.update();
     }
@@ -88,7 +88,10 @@ class Game {
         this.context.fillRect(0,0,this.width,this.height);
 
         this.background.render(this.context, this.camera);
-        this.floor.render(this.context, this.camera);
+
+        for (const floor of this.floors) {
+            floor.render(this.context, this.camera);
+        }
 
         for (const platform of this.platforms) {
             platform.render(this.context, this.camera);

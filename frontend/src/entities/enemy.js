@@ -3,7 +3,7 @@ import GameObject from "./GameObject";
 class Enemy extends GameObject {
     constructor(assets) {
 
-        super(700,40,130,280);
+        super(1750,40,130,280);
         this.spriteOffsetX = -183;
         this.spriteOffsetY = -107;
         this.spriteWidth = 480;

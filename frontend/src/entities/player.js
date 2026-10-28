@@ -57,20 +57,20 @@ class Player extends GameObject {
         this.deadScreenDelay = 0.3;
         this.deadScreenReady = false;
 
+        this.gameHeight = 1080;
+
     }
 
-    update(deltatime, input, groundY, gameWidth, platforms, enemy) { 
+    update(deltatime, input, groundY, gameWidth, platforms, enemy, floors) { 
 
         this.previousY = this.y;
-
-        if(this.state !== "DEAD") {
-        this.handleInput(deltatime, input);
-        }
-
+        console.log(this.state);
+        this.handleInput(input);
         this.applyGravity(deltatime);
         this.move(deltatime);
         this.isGrounded = false; 
-        this.checkGroundCollision(groundY);
+        this.checkGroundCollision(groundY, floors);
+        this.checkFallDeath();
         for(const platform of platforms) {
                 this.checkPlatformCollision(platform);
             }
@@ -132,10 +132,14 @@ class Player extends GameObject {
             }
         }
 
-    handleInput(deltatime, input) {
+    handleInput(input) {
 
         this.velocityX = 0;
 
+        if(this.state === "DEAD") {
+            return;
+        }
+        
         if(this.state === "ATTACK") {
             return;
         }
@@ -152,7 +156,7 @@ class Player extends GameObject {
 
         if (input.justPressedKeys.has(" ") && this.coyoteTimer > 0) {
 
-            this.velocityY = -400 * 2;
+            this.velocityY = -800;
             this.coyoteTimer = 0;
             this.isGrounded = false;
         }
@@ -165,29 +169,28 @@ class Player extends GameObject {
 
     }
 
-        applyGravity(deltatime) {
+    applyGravity(deltatime) {
 
-            this.velocityY  += 500 *3* deltatime;
+        this.velocityY  += 500 *3* deltatime;
 
-        }
+    }
 
-        move(deltatime) {
+    move(deltatime) {
 
-            this.x += this.velocityX * deltatime;
-            this.y += this.velocityY * deltatime;
+        this.x += this.velocityX * deltatime;
+        this.y += this.velocityY * deltatime;
 
-        }
+    }
 
-    checkGroundCollision(groundY) {
+    checkGroundCollision(groundY,floors) {
+        this.isGrounded = false;
 
-        if(this.y + this.height > groundY) {
+        const onFloor = floors.some(floor => this.x+this.width > floor.x && this.x < floor.x + floor.width);
 
+        if(onFloor && this.y+this.height >= groundY && this.previousY + this.height <= groundY){
             this.y = groundY - this.height;
-
             this.velocityY = 0;
-
             this.isGrounded = true;
-
         }
 
     }
@@ -339,9 +342,16 @@ class Player extends GameObject {
     }
 
     isDead() {
-        return this.health <= 0;
+        return this.health <= 0  || this.state === "DEAD" ;
     }
 
+    checkFallDeath() {
+        if (this.y > this.gameHeight && this.state !== "DEAD") {
+            this.state = "DEAD";
+            this.deadAnimationFinished = true;
+            this.deadScreenTimer = 0;
+        }
+    }
 
 }
 
