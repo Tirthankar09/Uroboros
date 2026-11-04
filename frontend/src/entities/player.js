@@ -1,11 +1,12 @@
 import GameObject from "./GameObject.js"
 import Camera from "../camera/Camera.js"
+import MovingPlatform from "./MovingPlatform.js";
 
 
 class Player extends GameObject {
     constructor(assets) {
 
-        super(100,100,100,250);
+        super(4000,100,100,250);
         this.spriteWidth = 480;
         this.spriteHeight = 480;
         this.spriteOffsetX = -188;
@@ -59,11 +60,14 @@ class Player extends GameObject {
 
         this.gameHeight = 1080;
 
+        this.onMovingPlatform = false;
+
     }
 
-    update(deltatime, input, groundY, gameWidth, platforms, enemy, floors) { 
+    update(deltatime, input, groundY, gameWidth, platforms, movingPlatform, enemy, floors) { 
 
         this.previousY = this.y;
+        this.onMovingPlatform = false;
         console.log(this.state);
         this.handleInput(input);
         this.applyGravity(deltatime);
@@ -74,6 +78,10 @@ class Player extends GameObject {
         for(const platform of platforms) {
                 this.checkPlatformCollision(platform);
             }
+       if(this.checkPlatformCollision(movingPlatform)) {
+        this.onMovingPlatform = true;
+       }
+        this.moveWithPlatform(movingPlatform);
         this.checkWallCollision(gameWidth);
         this.checkAttackCollision(enemy);
         if(this.hitFlashTimer > 0) {
@@ -219,7 +227,11 @@ class Player extends GameObject {
             this.y = platform.y - this.height;
             this.velocityY = 0;
             this.isGrounded = true;
+            
+            return true;
         }
+
+        return false;
 
     }
 
@@ -353,6 +365,11 @@ class Player extends GameObject {
         }
     }
 
+    moveWithPlatform(platform){
+        if(this.onMovingPlatform){
+            this.x += platform.x - platform.previousX;
+        }
+    }
 }
 
 export default Player;

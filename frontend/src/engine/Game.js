@@ -5,6 +5,7 @@ import Camera from "../camera/Camera.js"
 import Enemy from "../entities/enemy.js"
 import Floor from "../entities/Floor.js"
 import Background from "../entities/background.js"
+import MovingPlatform from "../entities/MovingPlatform.js"
 
 class Game {
 
@@ -14,7 +15,7 @@ class Game {
 
         this.width = 1920;
         this.height = 1080;
-        this.worldWidth = 5900;
+        this.worldWidth = 9900;
 
         this.canvas = document.createElement("canvas");
         this.context = this.canvas.getContext("2d");
@@ -36,9 +37,11 @@ class Game {
 
         this.platforms = [new Platform(500,720,300,80,assets.get("platform")), new Platform(900,580,300,80,assets.get("platform")), new Platform(2200,750,300,80,assets.get("platform"))];
 
+        this.movingPlatform = new MovingPlatform(4000, this.groundY - 150, 250, 40, 250, 4000, 5650, assets.get("platform"));
+ 
         this.camera = new Camera(this.player, this.width, this.height, this.worldWidth);
 
-        this.floors = [new Floor(0, this.groundY, 1000, this.height - this.groundY, assets.get("floor")), new Floor(1500, this.groundY, this.worldWidth, this.height - this.groundY, assets.get("floor"))];
+        this.floors = [new Floor(0, this.groundY, 2000, this.height - this.groundY, assets.get("floor")), new Floor(3000, this.groundY, 1000, this.height - this.groundY, assets.get("floor")), new Floor(6000, this.groundY, this.worldWidth, this.height - this.groundY, assets.get("floor"))];
 
         this.background = new Background(0, 0 , this.worldWidth, this.height, assets.get("background"));
 
@@ -76,9 +79,10 @@ class Game {
 
     update(deltatime) {
         
-        this.player.update(deltatime, this.input, this.groundY, this.worldWidth, this.platforms, this.enemy, this.floors);
+        this.player.update(deltatime, this.input, this.groundY, this.worldWidth, this.platforms, this.movingPlatform, this.enemy, this.floors);
         this.enemy.update(deltatime,this.groundY, this.platforms, this.player);
         this.camera.update();
+        this.movingPlatform.update(deltatime);
     }
 
     render() {
@@ -96,6 +100,8 @@ class Game {
         for (const platform of this.platforms) {
             platform.render(this.context, this.camera);
         }
+
+        this.movingPlatform.render(this.context, this.camera);
         
         this.enemy.render(this.context, this.camera);
         this.player.render(this.context, this.camera);
