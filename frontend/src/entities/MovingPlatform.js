@@ -14,6 +14,7 @@ class MovingPlatform extends GameObject{
 
     update(deltatime){
         this.previousX = this.x;
+        this.previousY = this.y;
 
         this.x += this.speed * this.direction * deltatime;
 

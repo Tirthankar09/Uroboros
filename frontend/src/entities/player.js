@@ -1,12 +1,13 @@
 import GameObject from "./GameObject.js"
 import Camera from "../camera/Camera.js"
 import MovingPlatform from "./MovingPlatform.js";
+import CircularPlatform from "./CircularPlatform.js";
 
 
 class Player extends GameObject {
     constructor(assets) {
 
-        super(4000,100,100,250);
+        super(100,100,100,250);
         this.spriteWidth = 480;
         this.spriteHeight = 480;
         this.spriteOffsetX = -188;
@@ -60,14 +61,19 @@ class Player extends GameObject {
 
         this.gameHeight = 1080;
 
-        this.onMovingPlatform = false;
+        this.onMovingPlatform = null;
 
     }
 
-    update(deltatime, input, groundY, gameWidth, platforms, movingPlatform, enemy, floors) { 
+    update(deltatime, input, groundY, gameWidth, platforms, movingPlatform, circularPlatforms, enemy, floors) { 
 
         this.previousY = this.y;
-        this.onMovingPlatform = false;
+        const previousMovingPlatform = this.onMovingPlatform;
+        if (previousMovingPlatform) {
+            this.x += previousMovingPlatform.x - previousMovingPlatform.previousX;
+            this.y += previousMovingPlatform.y - previousMovingPlatform.previousY;
+        }
+        this.onMovingPlatform = null;
         console.log(this.state);
         this.handleInput(input);
         this.applyGravity(deltatime);
@@ -76,12 +82,16 @@ class Player extends GameObject {
         this.checkGroundCollision(groundY, floors);
         this.checkFallDeath();
         for(const platform of platforms) {
-                this.checkPlatformCollision(platform);
+            this.checkPlatformCollision(platform);
+        }
+        if(this.checkPlatformCollision(movingPlatform)) {
+            this.onMovingPlatform = movingPlatform;
+        }
+        for(const platform of circularPlatforms) {
+            if(this.checkPlatformCollision(platform)) {
+                this.onMovingPlatform = platform;
             }
-       if(this.checkPlatformCollision(movingPlatform)) {
-        this.onMovingPlatform = true;
-       }
-        this.moveWithPlatform(movingPlatform);
+        }
         this.checkWallCollision(gameWidth);
         this.checkAttackCollision(enemy);
         if(this.hitFlashTimer > 0) {
@@ -217,7 +227,7 @@ class Player extends GameObject {
 
     checkPlatformCollision(platform) {
         
-        const wasAbovePlatform = this.previousY + this.height <= platform.y;
+        const wasAbovePlatform = this.previousY + this.height <= platform.previousY || platform.y;
         const isTouchingTop = this.y + this.height >= platform.y;
         const isOverlappingX = this.x + this.width > platform.x && this.x < platform.x + platform.width;
         const isFalling = this.velocityY > 0;
@@ -365,9 +375,10 @@ class Player extends GameObject {
         }
     }
 
-    moveWithPlatform(platform){
+    moveWithPlatform(){
         if(this.onMovingPlatform){
-            this.x += platform.x - platform.previousX;
+            this.x += this.onMovingPlatform.x - this.onMovingPlatform.previousX;
+            this.y += this.onMovingPlatform.y - this.onMovingPlatform.previousY;
         }
     }
 }
