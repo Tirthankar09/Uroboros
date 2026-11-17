@@ -1,13 +1,9 @@
 import GameObject from "./GameObject.js"
-import Camera from "../camera/Camera.js"
-import MovingPlatform from "./MovingPlatform.js";
-import CircularPlatform from "./CircularPlatform.js";
-
 
 class Player extends GameObject {
     constructor(assets) {
 
-        super(100,100,100,250);
+        super(6000,100,100,250);
         this.spriteWidth = 480;
         this.spriteHeight = 480;
         this.spriteOffsetX = -188;
@@ -177,6 +173,7 @@ class Player extends GameObject {
             this.velocityY = -800;
             this.coyoteTimer = 0;
             this.isGrounded = false;
+            this.onMovingPlatform = null;
         }
 
         if (input.justPressedMouseButtons.has(0)) {
@@ -227,7 +224,8 @@ class Player extends GameObject {
 
     checkPlatformCollision(platform) {
         
-        const wasAbovePlatform = this.previousY + this.height <= platform.previousY || platform.y;
+        const previousPlatformY = platform.previousY ?? platform.y;
+        const wasAbovePlatform = this.previousY + this.height <= previousPlatformY;
         const isTouchingTop = this.y + this.height >= platform.y;
         const isOverlappingX = this.x + this.width > platform.x && this.x < platform.x + platform.width;
         const isFalling = this.velocityY > 0;

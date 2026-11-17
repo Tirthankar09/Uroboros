@@ -27,8 +27,7 @@ class CircularPlatform extends GameObject {
     }
 
     render(context, camera){
-        context.fillStyle = "red";
-        context.fillRect(this.x - camera.x, this.y, this.width, this.height);
+        context.drawImage(this.texture, this.x - camera.x, this.y, this.width, this.height);
     }
 
 }

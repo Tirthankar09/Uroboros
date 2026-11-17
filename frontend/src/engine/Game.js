@@ -44,7 +44,7 @@ class Game {
  
         this.camera = new Camera(this.player, this.width, this.height, this.worldWidth);
 
-        this.floors = [new Floor(0, this.groundY, 2000, this.height - this.groundY, assets.get("floor")), new Floor(3000, this.groundY, 1000, this.height - this.groundY, assets.get("floor")), new Floor(6000, this.groundY, this.worldWidth, this.height - this.groundY, assets.get("floor"))];
+        this.floors = [new Floor(0, this.groundY, 2000, this.height - this.groundY, assets.get("floor")), new Floor(3000, this.groundY, 1000, this.height - this.groundY, assets.get("floor")), new Floor(6000, this.groundY, 2000, this.height - this.groundY, assets.get("floor")), new Floor(10500, this.groundY, this.worldWidth, this.height - this.groundY, assets.get("floor"))];
 
         this.background = new Background(0, 0 , this.worldWidth, this.height, assets.get("background"));
 
@@ -89,6 +89,7 @@ class Game {
         this.player.update(deltatime, this.input, this.groundY, this.worldWidth, this.platforms, this.movingPlatform, this.circularPlatforms, this.enemy, this.floors);
         this.enemy.update(deltatime,this.groundY, this.platforms, this.player);
         this.camera.update();
+        console.log(this.player.x);
 
     }
 
